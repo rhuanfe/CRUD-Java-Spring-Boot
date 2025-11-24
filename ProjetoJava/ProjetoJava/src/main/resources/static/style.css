@@ -1,0 +1,134 @@
+/* ===== Global ===== */
+* { box-sizing: border-box; margin:0; padding:0; font-family: "Segoe UI", Tahoma, sans-serif; }
+
+body {
+  background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+  color: #fff;
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+
+header {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(45deg, #ff6d00, #ff3d00);
+  border-bottom-left-radius: 50% 10%;
+  border-bottom-right-radius: 50% 10%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+header h1 { font-size: 3em; }
+header p { margin-top: 10px; font-size: 1.3em; }
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 30px 20px 10px;
+}
+
+.tab {
+  padding: 12px 25px;
+  border-radius: 30px;
+  background: rgba(255,255,255,0.1);
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.tab.active { background: #ff6d00; box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
+.tab:hover { background: rgba(255,109,0,0.7); }
+
+/* ===== Conteúdo abas ===== */
+.tab-content {
+  max-width: 600px;
+  margin: 0 auto 30px;
+  background: rgba(255,255,255,0.1);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  display: none;
+}
+
+.tab-content.active { display: block; }
+
+/* ===== Labels e Inputs ===== */
+label { display:block; margin-top:12px; font-weight:bold; font-size:0.95em; }
+input {
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  margin-bottom:15px;
+  border-radius:12px;
+  border:2px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
+  color:#fff;
+  font-size:14px;
+  outline:none;
+  transition:0.3s;
+}
+input:focus { border-color:#ffb74d; box-shadow:0 0 8px rgba(255,183,77,0.6); }
+
+/* ===== Botões ===== */
+button {
+  width:100%;
+  padding:12px;
+  border-radius:50px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+  color:#fff;
+  text-transform:uppercase;
+  font-size:14px;
+  transition:0.3s;
+  margin-top:10px;
+}
+
+.create-btn { background:#00e676; }
+.create-btn:hover { background:#00c853; }
+
+.search-btn { background:#29b6f6; }
+.search-btn:hover { background:#0288d1; }
+
+.delete-btn { background:#ef5350; }
+.delete-btn:hover { background:#c62828; }
+
+.update-btn { background:#ffa726; }
+.update-btn:hover { background:#f57c00; }
+
+/* ===== Mensagens personalizadas ===== */
+.mensagem {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+  font-size:0.95em;
+  display: none;
+  transition:0.3s;
+}
+.mensagem.sucesso { background: rgba(0,230,118,0.3); color: #00c853; }
+.mensagem.erro { background: rgba(255,0,0,0.2); color: #c62828; }
+
+/* ===== Resultado busca ===== */
+.resultado {
+  margin-top:20px;
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap:15px;
+}
+.resultado-card {
+  background: rgba(255,255,255,0.1);
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 6px 14px rgba(0,0,0,0.3);
+  text-align:center;
+  transition: transform 0.2s;
+}
+.resultado-card:hover { transform: scale(1.05); }
+.resultado-card h3 { font-size:1.2em; margin-bottom:8px; }
+.resultado-card p { font-size:0.95em; margin-bottom:5px; }
+
+

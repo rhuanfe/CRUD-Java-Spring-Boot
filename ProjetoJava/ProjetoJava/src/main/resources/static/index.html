@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Filmes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <h1>🎬 Catálogo de Filmes</h1>
+    <p>Gerencie seus filmes favoritos de forma moderna e divertida</p>
+</header>
+
+<div class="tabs">
+    <div class="tab active" data-tab="create">➕ Adicionar</div>
+    <div class="tab" data-tab="search">🔎 Buscar</div>
+    <div class="tab" data-tab="delete">🗑️ Remover</div>
+    <div class="tab" data-tab="update">✏️ Atualizar</div>
+</div>
+
+<!-- Aba Adicionar -->
+<div id="create" class="tab-content active">
+    <label>Nome do Filme</label>
+    <input type="text" id="nomeFilme" placeholder="Digite o nome do filme">
+    <label>Diretor</label>
+    <input type="text" id="diretor" placeholder="Digite o diretor">
+    <button class="create-btn" onclick="criar()">Salvar Filme</button>
+    <div class="mensagem" id="mensagemCreate"></div>
+</div>
+
+<!-- Aba Buscar -->
+<div id="search" class="tab-content">
+    <label>Nome do Filme</label>
+    <input type="text" id="buscarNome" placeholder="Digite o nome do filme">
+    <button class="search-btn" onclick="buscar()">Buscar</button>
+
+    <!-- Mensagem de status -->
+    <div class="mensagem" id="mensagemSearch"></div>
+
+    <div class="resultado" id="resultadoBuscar"></div>
+</div>
+
+
+<!-- Aba Remover -->
+<div id="delete" class="tab-content">
+    <label>Nome do Filme</label>
+    <input type="text" id="deletarNome" placeholder="Digite o nome do filme">
+    <button class="delete-btn" onclick="deletar()">Remover</button>
+    <div class="mensagem" id="mensagemDelete"></div>
+</div>
+
+<!-- Aba Atualizar -->
+<div id="update" class="tab-content">
+    <label>ID do Filme</label>
+    <input type="number" id="idFilme" placeholder="Digite o ID">
+    <label>Novo Nome</label>
+    <input type="text" id="novoNome" placeholder="Digite o novo nome do filme">
+    <label>Novo Diretor</label>
+    <input type="text" id="novoDiretor" placeholder="Digite o novo diretor">
+    <button class="update-btn" onclick="atualizar()">Atualizar</button>
+    <div class="mensagem" id="mensagemUpdate"></div>
+</div>
+
+<script>
+    /* ==== Tabs ==== */
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const target = tab.dataset.tab;
+            contents.forEach(c => c.classList.remove('active'));
+            document.getElementById(target).classList.add('active');
+        });
+    });
+
+    /* ==== Funções JS ==== */
+    const api = "/filmes";
+
+    function mostrarMensagem(div, texto, sucesso) {
+        div.textContent = texto;
+        div.className = "mensagem " + (sucesso ? "sucesso" : "erro");
+        div.style.display = "block";
+        setTimeout(() => div.style.display = "none", 3000);
+    }
+
+    async function criar() {
+        const nome = document.getElementById("nomeFilme").value.trim();
+        const diretor = document.getElementById("diretor").value.trim();
+        const mensagem = document.getElementById("mensagemCreate");
+
+        if (!nome || !diretor) return mostrarMensagem(mensagem, "Preencha todos os campos!", false);
+
+        const resp = await fetch(api, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome, diretor })
+        });
+
+        mostrarMensagem(mensagem, resp.ok ? "🎉 Filme adicionado com sucesso!" : "❌ Erro ao adicionar o filme!", resp.ok);
+    }
+
+    async function buscar() {
+    const nome = document.getElementById("buscarNome").value.trim();
+    const resultadoDiv = document.getElementById("resultadoBuscar");
+    const mensagem = document.getElementById("mensagemSearch");
+
+    resultadoDiv.innerHTML = ""; // Limpa resultados antigos
+
+    if (!nome) {
+        mostrarMensagem(mensagem, "Preencha o nome do filme!", false);
+        return;
+    }
+
+    const resp = await fetch(`${api}?nome=${encodeURIComponent(nome)}`);
+    if (resp.ok) {
+        const data = await resp.json();
+
+        const card = document.createElement("div");
+        card.className = "resultado-card";
+
+        const h3 = document.createElement("h3");
+        h3.textContent = data.nome;
+
+        const pDiretor = document.createElement("p");
+        pDiretor.textContent = `Diretor: ${data.diretor}`;
+
+        const pId = document.createElement("p");
+        pId.textContent = `ID: ${data.id}`;
+
+        card.appendChild(h3);
+        card.appendChild(pDiretor);
+        card.appendChild(pId);
+
+        resultadoDiv.appendChild(card);
+    } else {
+        mostrarMensagem(mensagem, "❌ Filme não encontrado!", false);
+    }
+}
+
+    async function deletar() {
+        const nome = document.getElementById("deletarNome").value.trim();
+        const mensagem = document.getElementById("mensagemDelete");
+
+        if (!nome) return mostrarMensagem(mensagem, "Preencha o nome do filme!", false);
+
+        const resp = await fetch(`${api}?nome=${encodeURIComponent(nome)}`, { method: "DELETE" });
+
+        mostrarMensagem(mensagem, resp.ok ? "🗑️ Filme removido com sucesso!" : "❌ Erro ao remover o filme!", resp.ok);
+    }
+
+    async function atualizar() {
+        const id = document.getElementById("idFilme").value.trim();
+        const nome = document.getElementById("novoNome").value.trim();
+        const diretor = document.getElementById("novoDiretor").value.trim();
+        const mensagem = document.getElementById("mensagemUpdate");
+
+        if (!id || !nome || !diretor) return mostrarMensagem(mensagem, "Preencha todos os campos!", false);
+
+        const resp = await fetch(`${api}?id=${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome, diretor })
+        });
+
+        mostrarMensagem(mensagem, resp.ok ? "✏️ Filme atualizado com sucesso!" : "❌ Erro ao atualizar o filme!", resp.ok);
+    }
+</script>
+</body>
+</html>
